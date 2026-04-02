@@ -1,0 +1,23 @@
+{
+  "$schema": "https://www.getbifrost.ai/schema",
+  "providers": {
+    "openai": {
+      "name": "intel-ovms",
+      "keys": [
+        {
+          "name": "local-key",
+          "value": "none",
+          "models": ["*"]
+        }
+      ],
+      "network_config": {
+        "base_url": "http://127.0.0.1:8000/v1"
+      }
+    }
+  },
+  "routing_strategy": "latency",
+  "semantic_cache": {
+    "enabled": true,
+    "type": "memory"
+  }
+}
