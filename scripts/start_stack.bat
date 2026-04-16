@@ -1,26 +1,24 @@
 @echo off
-SETLOCAL
+:: Set variables WITHOUT quotes here
+SET PROJ_ROOT=C:\hyms
+SET OVMS_BIN=%PROJ_ROOT%\ovms\ovms.exe
 
-:: 1. Define Project Root
-SET "PROJ_ROOT=C:\hyms"
+:: 1. Add OVMS to Path
+SET "PATH=%PROJ_ROOT%\ovms;%PROJ_ROOT%\ovms\python;%PATH%"
 
-:: 2. Fix DLL Pathing
-SET "PATH=%PROJ_ROOT%\ovms\python;%PROJ_ROOT%\ovms;%PATH%"
+:: 2. Launch OpenVINO (The Hands)
+:: We use the path without quotes in the assignment, then quote the usage.
+echo [HANDS] Launching OpenVINO GenAI Server...
+start "OVMS-HANDS" /D "%PROJ_ROOT%\ovms" cmd /k "%OVMS_BIN% --model_repository_path %PROJ_ROOT%\models --model_name deepseek-r1 --port 9000 --rest_port 8000 --target_device CPU --task text_generation"
 
-:: 3. Start OpenVINO Model Server (The Hands)
-:: Removed the backslashes from the quotes here
-echo [HANDS] Launching OpenVINO...
-start "OVMS-HANDS" /D "%PROJ_ROOT%\ovms" cmd /k "ovms.exe --model_path %PROJ_ROOT%\models --model_name deepseek-r1 --port 9000 --rest_port 8000 --target_device CPU"
+:: 3. Wait for CPU to compile the model
+timeout /t 10
 
-:: 4. Wait for initialization
-timeout /t 5
-
-:: 5. Start BiFrost Gateway (The Brain)
-:: Removed the escaped quotes that were breaking the directory creation
+:: 4. Launch BiFrost (The Brain)
 echo [BRAIN] Launching BiFrost...
 start "BIFROST-BRAIN" /D "%PROJ_ROOT%" cmd /k "npx -y @maximhq/bifrost -app-dir config"
 
 echo.
 echo ==========================================
-echo BIFROST + OPENVINO REPAIRED
+echo DEEPSEEK-R1 STACK INITIALIZED
 echo ==========================================
