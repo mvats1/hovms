@@ -1,2 +1,5 @@
-models/ 
-ovms/ 
+models/
+ovms/
+config/*.db
+config/*.db-shm
+config/*.db-wal
